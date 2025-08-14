@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
+*.pem
+.idea
+.vscode
