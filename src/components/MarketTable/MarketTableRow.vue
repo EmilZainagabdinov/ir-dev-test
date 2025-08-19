@@ -13,7 +13,7 @@
     <td>
       <div class="priceChange">
         <span class="percentageChange" :class="isPositiveChange ? 'positiveChange' : 'negativeChange'"
-          >{{ tradePairData.price.change.percent }}%</span
+          >{{ props.tradePairData.price.change.percent }}%</span
         >
         <span class="amountChange" :class="isPositiveChange ? 'positiveChange' : 'negativeChange'">{{
           priceChangeAmount
@@ -33,29 +33,36 @@ import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { PriceChangeEnum, TradePairData } from '@/stores/types.ts';
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 import LineChart from '@/components/MarketTable/LineChart.vue';
-import { reactive } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{ tradePairData: TradePairData }>();
 
 const { isSm, isXl } = useBreakpoints();
 const { tickersMap } = useCurrencyConfigStore();
-const chartDataset = reactive(
-  props.tradePairData.priceHistory.map((item) => {
+
+const chartDataset = computed(() => {
+  return props.tradePairData.priceHistory.map((item) => {
     return parseFloat(item);
+  });
+});
+
+const hasImage = computed(() => tickersMap?.[props.tradePairData.pair.primary]?.icon);
+const icon = computed(() => `data:image/svg+xml;base64,${tickersMap?.[props.tradePairData.pair.primary]?.icon}`);
+
+const coinTicker = computed(
+  () => tickersMap?.[props.tradePairData.pair.primary]?.ticker || props.tradePairData.pair.primary,
+);
+const lastPrice = computed(() =>
+  parseFloat(props.tradePairData.price.last).toLocaleString([], {
+    maximumFractionDigits: tickersMap?.[props.tradePairData.pair.primary]?.fractionDigits || 5,
   }),
 );
+const priceChangeAmount = computed(() => parseFloat(props.tradePairData.price.change.amount).toFixed(2));
+const volumeValue = computed(() =>
+  parseFloat(props.tradePairData.volume.secondary).toLocaleString([], { maximumFractionDigits: 2 }),
+);
 
-const hasImage = tickersMap?.[props.tradePairData.pair.primary]?.icon;
-const icon = `data:image/svg+xml;base64,${tickersMap?.[props.tradePairData.pair.primary]?.icon}`;
-
-const coinTicker = tickersMap?.[props.tradePairData.pair.primary]?.ticker || props.tradePairData.pair.primary;
-const lastPrice = parseFloat(props.tradePairData.price.last).toLocaleString([], {
-  maximumFractionDigits: tickersMap?.[props.tradePairData.pair.primary]?.fractionDigits || 5,
-});
-const priceChangeAmount = parseFloat(props.tradePairData.price.change.amount).toFixed(2);
-const volumeValue = parseFloat(props.tradePairData.volume.secondary).toLocaleString([], { maximumFractionDigits: 2 });
-
-const isPositiveChange = props.tradePairData.price.change.direction === PriceChangeEnum.UP;
+const isPositiveChange = computed(() => props.tradePairData.price.change.direction === PriceChangeEnum.UP);
 </script>
 
 <style scoped>

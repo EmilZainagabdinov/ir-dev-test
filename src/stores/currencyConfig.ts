@@ -6,6 +6,7 @@ import { currencyConfigMock } from '@/stores/mocks/currencyMock.ts';
 interface State {
   data: CurrencyConfig[];
   tickersMap: Record<string, { ticker: string; icon: string, fractionDigits: number }>;
+  initialFetch: boolean;
   isFetching: boolean;
   error: boolean;
 }
@@ -14,6 +15,7 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
     return {
       data: [],
       tickersMap: {},
+      initialFetch: true,
       isFetching: false,
       error: false,
     };
@@ -48,6 +50,7 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
       } catch {
         this.error = true;
       } finally {
+        this.initialFetch = false;
         this.isFetching = false;
       }
     },

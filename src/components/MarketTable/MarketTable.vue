@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { useMarketDataStore } from '@/stores/marketData.ts';
 
@@ -35,12 +35,25 @@ import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 const currencyConfig = useCurrencyConfigStore();
 const marketData = useMarketDataStore();
 
-const isFetching = computed(() => currencyConfig.isFetching || marketData.isFetching);
+let pollingInterval: ReturnType<typeof setTimeout>;
+
+const isFetching = computed(() => currencyConfig.initialFetch || marketData.initialFetch);
 const { isSm, isXl } = useBreakpoints();
 
 onMounted(() => {
   currencyConfig.fetchCurrencyConfig();
   marketData.fetchMarketData();
+
+  pollingInterval = setInterval(() => {
+    currencyConfig.fetchCurrencyConfig();
+    marketData.fetchMarketData();
+  }, 10000);
+});
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
 });
 </script>
 

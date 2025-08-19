@@ -5,6 +5,7 @@ import { marketDataMock } from '@/stores/mocks/marketDataMock.ts';
 
 interface State {
   data: TradePairData[];
+  initialFetch: boolean;
   isFetching: boolean;
   error: boolean;
 }
@@ -13,6 +14,7 @@ export const useMarketDataStore = defineStore('marketData', {
   state: (): State => {
     return {
       data: [],
+      initialFetch: true,
       isFetching: false,
       error: false,
     }
@@ -36,6 +38,7 @@ export const useMarketDataStore = defineStore('marketData', {
       } catch {
         this.error = true;
       } finally {
+        this.initialFetch = false;
         this.isFetching = false;
       }
     },
