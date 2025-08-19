@@ -2,7 +2,7 @@
   <tr class="marketTableRow">
     <td>
       <div class="coinCell">
-        <img v-if="hasImage" :src="icon" :alt="`${coinTicker} icon`" height="24" width="24"/>
+        <img v-if="hasImage" :src="icon" :alt="`${coinTicker} icon`" height="24" width="24" />
         <div v-else class="noImageWrapper">
           <ImageOff :size="20" />
         </div>
@@ -20,23 +20,24 @@
         }}</span>
       </div>
     </td>
-    <td class="currencyValue">$ {{ volumeValue }}</td>
-    <td>
+    <td v-if="!isSm" class="currencyValue">$ {{ volumeValue }}</td>
+    <td v-if="isXl">
       <LineChart :dataset="chartDataset" />
     </td>
   </tr>
 </template>
 
 <script setup lang="ts">
+import { ImageOff } from 'lucide-vue-next';
 import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { PriceChangeEnum, TradePairData } from '@/stores/types.ts';
-import { ImageOff } from 'lucide-vue-next';
-
+import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 import LineChart from '@/components/MarketTable/LineChart.vue';
 import { reactive } from 'vue';
 
 const props = defineProps<{ tradePairData: TradePairData }>();
 
+const { isSm, isXl } = useBreakpoints();
 const { tickersMap } = useCurrencyConfigStore();
 const chartDataset = reactive(
   props.tradePairData.priceHistory.map((item) => {
@@ -75,6 +76,17 @@ const isPositiveChange = props.tradePairData.price.change.direction === PriceCha
   gap: 16px;
   text-align: right;
   font-weight: 500;
+  @media (width < 1024px) {
+    gap: 8px;
+  }
+  @media (width < 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+.amountChange {
+  @media (width < 480px) {
+    display: none;
+  }
 }
 .positiveChange {
   &:not(.amountChange) {
