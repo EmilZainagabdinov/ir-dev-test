@@ -26,6 +26,12 @@ export default [
     },
     rules: {
       'vue/multi-word-component-names': 'off',
+      'vue/no-unused-vars': [
+        'warn',
+        {
+          ignorePattern: '^_',
+        },
+      ],
     },
   },
   {
@@ -73,14 +79,6 @@ export default [
     },
   },
   {
-    ignores: [
-      'node_modules/**',
-      'dist/**',
-      'build/**',
-      '.vite/**',
-      'coverage/**',
-      '*.min.js',
-      '*.min.ts',
-    ],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', '.vite/**', 'coverage/**', '*.min.js', '*.min.ts'],
   },
 ];

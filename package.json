@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.7.0",
+    "chart.js": "^4.5.0",
+    "lucide-vue-next": "^0.540.0",
     "mande": "^2.0.9",
     "pinia": "^2.1.0",
-    "vue": "^3.4.0"
+    "vue": "^3.4.0",
+    "vue-chartjs": "^5.3.2"
   },
   "devDependencies": {
     "@eslint/css": "^0.10.0",
