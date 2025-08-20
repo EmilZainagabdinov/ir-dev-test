@@ -12,5 +12,11 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      '/test/api': {
+        target: 'https://user26614.requestly.tech/',
+        changeOrigin: true,
+      },
+    },
   },
 });

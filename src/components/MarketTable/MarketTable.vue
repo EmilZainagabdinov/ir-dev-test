@@ -47,7 +47,7 @@ onMounted(() => {
   pollingInterval = setInterval(() => {
     currencyConfig.fetchCurrencyConfig();
     marketData.fetchMarketData();
-  }, 10000);
+  }, 5000);
 });
 
 onUnmounted(() => {

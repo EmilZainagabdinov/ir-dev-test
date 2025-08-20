@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia';
-// import { /*mandeApi,*/ mandeDirectApi } from '@/api/mandeApi.ts';
 import { CurrencyConfig } from '@/stores/types.ts';
-import { currencyConfigMock } from '@/stores/mocks/currencyMock.ts';
+// import { currencyConfigMock } from '@/stores/mocks/currencyMock.ts';
+import axiosApi from '@/api/axiosApi.ts';
+import { CanceledError } from 'axios';
 
 interface State {
   data: CurrencyConfig[];
-  tickersMap: Record<string, { ticker: string; icon: string, fractionDigits: number }>;
+  tickersMap: Record<string, { ticker: string; icon: string; fractionDigits: number }>;
   initialFetch: boolean;
   isFetching: boolean;
   error: boolean;
+  abortController: AbortController | null;
 }
 export const useCurrencyConfigStore = defineStore('currencyConfig', {
   state: (): State => {
@@ -18,6 +20,7 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
       initialFetch: true,
       isFetching: false,
       error: false,
+      abortController: null,
     };
   },
 
@@ -32,26 +35,35 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
     async fetchCurrencyConfig() {
       this.isFetching = true;
       this.error = false;
+
       try {
-        // this.data = await mandeApi.get<CurrencyConfig[]>('/currency');
-        // const response = await mandeDirectApi.get<CurrencyConfig[]>('/currency?username=user26614');
+        if (this.abortController) {
+          this.abortController.abort();
+        }
 
-        // this.createTickersMap(response);
-        // this.data = response;
+        this.abortController = new AbortController();
+        const signal = this.abortController.signal;
 
-        const response = new Promise((resolve) => {
-          setTimeout(() => {
-            resolve('');
-          }, 1500);
-        });
-        await response;
-        this.createTickersMap(currencyConfigMock);
-        this.data = currencyConfigMock;
-      } catch {
+        const response = await axiosApi.get<CurrencyConfig[]>('/test/api/currency', { signal });
+
+        this.createTickersMap(response.data);
+        this.data = response.data;
+        this.initialFetch = false;
+
+        // const response = new Promise((resolve) => {
+        //   setTimeout(() => {
+        //     resolve('');
+        //   }, 1500);
+        // });
+        // await response;
+        // this.createTickersMap(currencyConfigMock);
+        // this.data = currencyConfigMock;
+      } catch (error) {
+        if (error instanceof CanceledError) return;
         this.error = true;
       } finally {
-        this.initialFetch = false;
         this.isFetching = false;
+        this.abortController = null;
       }
     },
   },
