@@ -34,11 +34,13 @@ import { PriceChangeEnum, TradePairData } from '@/stores/types.ts';
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 import LineChart from '@/components/MarketTable/LineChart.vue';
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps<{ tradePairData: TradePairData }>();
 
 const { isSm, isXl } = useBreakpoints();
-const { tickersMap } = useCurrencyConfigStore();
+const currencyConfig = useCurrencyConfigStore();
+const { tickersMap } = storeToRefs(currencyConfig);
 
 const chartDataset = computed(() => {
   return props.tradePairData.priceHistory.map((item) => {
@@ -46,15 +48,15 @@ const chartDataset = computed(() => {
   });
 });
 
-const hasImage = computed(() => tickersMap?.[props.tradePairData.pair.primary]?.icon);
-const icon = computed(() => `data:image/svg+xml;base64,${tickersMap?.[props.tradePairData.pair.primary]?.icon}`);
+const hasImage = computed(() => tickersMap.value?.[props.tradePairData.pair.primary]?.icon);
+const icon = computed(() => `data:image/svg+xml;base64,${tickersMap.value?.[props.tradePairData.pair.primary]?.icon}`);
 
 const coinTicker = computed(
-  () => tickersMap?.[props.tradePairData.pair.primary]?.ticker || props.tradePairData.pair.primary,
+  () => tickersMap.value?.[props.tradePairData.pair.primary]?.ticker || props.tradePairData.pair.primary,
 );
 const lastPrice = computed(() =>
   parseFloat(props.tradePairData.price.last).toLocaleString([], {
-    maximumFractionDigits: tickersMap?.[props.tradePairData.pair.primary]?.fractionDigits || 5,
+    maximumFractionDigits: tickersMap.value?.[props.tradePairData.pair.primary]?.fractionDigits || 5,
   }),
 );
 const priceChangeAmount = computed(() => parseFloat(props.tradePairData.price.change.amount).toFixed(2));

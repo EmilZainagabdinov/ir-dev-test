@@ -3,7 +3,7 @@
   <main>
     <MarketTable />
   </main>
-  <header>footer here...</header>
+  <footer>footer here...</footer>
 </template>
 
 <script setup>
