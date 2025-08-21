@@ -1,10 +1,8 @@
 <template>
   <div class="wrapper">
     <div class="filtersBar">
-      <div class="searchFieldWrapper">
-        <Search color="#646469" :size="18" class="searchFieldIcon" />
-        <input id="marketSearch" class="searchField" type="text" placeholder="Search..." v-model="search" />
-      </div>
+      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." />
+      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." />
     </div>
     <div class="tableWrapper">
       <table class="marketTable">
@@ -33,16 +31,19 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { Search } from 'lucide-vue-next';
+import { storeToRefs } from 'pinia';
 import { watchDebounced } from '@vueuse/core';
+import { Search } from 'lucide-vue-next';
 import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { useMarketDataStore } from '@/stores/marketData.ts';
+import { PriceChangeEnum, TradePairData } from '@/stores/types.ts';
+import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 
+import Select from '@/components/UI/Select.vue';
+import Input from '@/components/UI/Input.vue';
 import MarketTableRow from './MarketTableRow.vue';
 import MarketTableSkeleton from '@/components/MarketTable/MarketTableSkeleton.vue';
-import { useBreakpoints } from '@/composables/useMediaQuery.ts';
-import { storeToRefs } from 'pinia';
-import { TradePairData } from '@/stores/types.ts';
+import { SelectOptions } from '@/components/UI/types.ts';
 
 const currencyConfig = useCurrencyConfigStore();
 const marketData = useMarketDataStore();
@@ -52,6 +53,7 @@ const { data: marketDataList } = storeToRefs(marketData);
 
 const search = ref('');
 const debouncedSearch = ref('');
+const filter = ref('');
 const filteredMarketList = ref<TradePairData[]>([]);
 
 watchDebounced(
@@ -63,8 +65,12 @@ watchDebounced(
 );
 
 const isFetching = computed(() => currencyConfig.initialFetch || marketData.initialFetch);
+const filterOptions: SelectOptions[] = [
+  { label: 'Gaining', value: PriceChangeEnum.UP },
+  { label: 'Losing', value: PriceChangeEnum.DOWN },
+];
 
-watch([marketDataList, debouncedSearch], () => {
+watch([marketDataList, filter, debouncedSearch], () => {
   let marketListCopy = [...marketDataList.value];
 
   if (debouncedSearch.value) {
@@ -73,6 +79,10 @@ watch([marketDataList, debouncedSearch], () => {
         tradePair.pair.primary.toLowerCase().includes(debouncedSearch.value) ||
         currencyConfig.tickersMap?.[tradePair.pair.primary]?.ticker.toLowerCase().includes(debouncedSearch.value),
     );
+  }
+
+  if (filter.value) {
+    marketListCopy = marketListCopy.filter((tradePair) => tradePair.price.change.direction === filter.value);
   }
 
   filteredMarketList.value = [...marketListCopy];
@@ -109,32 +119,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-}
-.searchFieldWrapper {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  width: 240px;
-  height: 40px;
-  background-color: #e6e6e6;
-  border-radius: 8px;
-  border: 1px solid #bebebe;
-  padding: 0 12px;
-  &:focus-within {
-    outline: solid 3px #a0a0a0;
-  }
-}
-.searchField {
-  all: unset;
-  min-width: 0;
-  color: #2d2d2d;
-  font-weight: 500;
-  &::placeholder {
-    color: #a0a0a0;
-  }
-}
-.searchFieldIcon {
-  flex-shrink: 0;
+  gap: 16px;
 }
 .tableWrapper {
   color: #1e1e1e;

@@ -58,6 +58,7 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
         // await response;
         // this.createTickersMap(currencyConfigMock);
         // this.data = currencyConfigMock;
+        // this.initialFetch = false;
       } catch (error) {
         if (error instanceof CanceledError) return;
         this.error = true;
