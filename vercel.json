@@ -1,5 +1,5 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/test/api/:path*",
       "destination": "https://user26614.requestly.tech/test/api/:path*"
