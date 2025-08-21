@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
     <div class="filtersBar">
-      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." width="200px" />
-      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." width="300px" />
+      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." :width="isSm ? '100%' : '200px'" />
+      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." :width="isSm ? '100%' : '300px'" />
     </div>
     <div class="tableWrapper">
       <table class="marketTable">
@@ -120,6 +120,9 @@ onUnmounted(() => {
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
+  @media (width <= 768px) {
+    flex-direction: column;
+  }
 }
 .tableWrapper {
   color: #1e1e1e;
