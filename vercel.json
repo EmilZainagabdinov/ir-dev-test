@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/test/api/:path*",
-      "destination": "${API_URL}/test/api/:path*"
+      "destination": "@API_URL/test/api/:path*"
     }
   ]
 }
