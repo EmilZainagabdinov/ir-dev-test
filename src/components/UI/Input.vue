@@ -7,9 +7,10 @@
 
 <script setup lang="ts">
 import { LucideIcon } from 'lucide-vue-next';
+import { InputWidth } from '@/components/UI/types.ts';
 
 defineOptions({ inheritAttrs: false });
-const { icon = null } = defineProps<{ placeholder?: string; icon?: LucideIcon }>();
+const { icon = null, width = '100%' } = defineProps<{ placeholder?: string; icon?: LucideIcon; width?: InputWidth }>();
 const model = defineModel();
 </script>
 
@@ -18,7 +19,7 @@ const model = defineModel();
   display: flex;
   gap: 12px;
   align-items: center;
-  width: 240px;
+  width: v-bind(width);
   height: 40px;
   background-color: #f0f0f0;
   border-radius: 8px;
@@ -31,6 +32,7 @@ const model = defineModel();
 .inputField {
   all: unset;
   min-width: 0;
+  width: 100%;
   color: #2d2d2d;
   font-weight: 500;
   &::placeholder {

@@ -36,10 +36,10 @@ import {
   AcceptableValue,
 } from 'reka-ui';
 import { ChevronDown } from 'lucide-vue-next';
-import { SelectOptions } from '@/components/UI/types.ts';
+import { InputWidth, SelectOptions } from '@/components/UI/types.ts';
 
 const model = defineModel();
-const { options, placeholder = 'Select...' } = defineProps<{ options: SelectOptions[]; placeholder?: string }>();
+const { options, width = '100%', placeholder = 'Select...' } = defineProps<{ options: SelectOptions[]; width?: InputWidth, placeholder?: string }>();
 
 const update = (payload: AcceptableValue) => {
   if (payload === null) {
@@ -54,7 +54,7 @@ const update = (payload: AcceptableValue) => {
   gap: 12px;
   align-items: center;
   height: 40px;
-  width: 160px;
+  width: v-bind(width);
   background-color: #f0f0f0;
   border-radius: 8px;
   border: 1px solid #bebebe;

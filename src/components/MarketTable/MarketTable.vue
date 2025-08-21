@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
     <div class="filtersBar">
-      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." />
-      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." />
+      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." width="200px" />
+      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." width="300px" />
     </div>
     <div class="tableWrapper">
       <table class="marketTable">
