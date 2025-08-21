@@ -36,10 +36,10 @@ body {
     @media (width < 1280px) {
         margin: 0 40px;
     }
-    @media (width <= 768px) {
+    @media (width < 768px) {
         margin: 0 24px;
     }
-    @media (width <= 480px) {
+    @media (width < 480px) {
         margin: 0 12px;
     }
 }

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { TradePairData } from '@/stores/types.ts';
 import axiosApi from '@/api/axiosApi.ts';
 import { CanceledError } from 'axios';
-// import { marketDataMock, marketDataMock2 } from '@/stores/mocks/marketDataMock.ts';
 
 interface State {
   data: TradePairData[];
@@ -37,19 +36,6 @@ export const useMarketDataStore = defineStore('marketData', {
         const response = await axiosApi.get<TradePairData[]>('/test/api/market', { signal });
         this.data = response.data;
         this.initialFetch = false;
-
-        // const response = new Promise((resolve) => {
-        //   setTimeout(() => {
-        //   resolve('');
-        //   }, 1000);
-        // });
-        // await response;
-        // if (this.initialFetch) {
-        //   this.data = marketDataMock as TradePairData[];
-        // } else {
-        //   this.data = marketDataMock2 as TradePairData[];
-        // }
-        // this.initialFetch = false;
       } catch (error: unknown) {
         if (error instanceof CanceledError) return;
         this.error = true;

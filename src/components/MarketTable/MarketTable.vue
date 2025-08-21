@@ -16,13 +16,15 @@
           </tr>
         </thead>
         <tbody class="marketTableBody">
+          <MarketTableSkeleton v-if="isFetching" />
+          <MarketTablePlaceholder v-else-if="!isFetching && filteredMarketList.length === 0" :no-filters="noActiveFilters" />
           <MarketTableRow
-            v-if="!isFetching"
+            v-else
             v-for="item in filteredMarketList"
             :key="item.pair.primary"
             :trade-pair-data="item"
           />
-          <MarketTableSkeleton v-else />
+
         </tbody>
       </table>
     </div>
@@ -44,6 +46,7 @@ import Input from '@/components/UI/Input.vue';
 import MarketTableRow from './MarketTableRow.vue';
 import MarketTableSkeleton from '@/components/MarketTable/MarketTableSkeleton.vue';
 import { SelectOptions } from '@/components/UI/types.ts';
+import MarketTablePlaceholder from '@/components/MarketTable/MarketTablePlaceholder.vue';
 
 const currencyConfig = useCurrencyConfigStore();
 const marketData = useMarketDataStore();
@@ -65,6 +68,7 @@ watchDebounced(
 );
 
 const isFetching = computed(() => currencyConfig.initialFetch || marketData.initialFetch);
+const noActiveFilters = computed(() => !debouncedSearch.value && !filter.value );
 const filterOptions: SelectOptions[] = [
   { label: 'Gaining', value: PriceChangeEnum.UP },
   { label: 'Losing', value: PriceChangeEnum.DOWN },
@@ -108,10 +112,10 @@ onUnmounted(() => {
 <style scoped>
 .wrapper {
   margin: 48px 0 96px;
-  @media (width <= 768px) {
+  @media (width < 768px) {
     margin: 24px 0 48px;
   }
-  @media (width <= 480px) {
+  @media (width < 480px) {
     margin: 12px 0 24px;
   }
 }
@@ -120,7 +124,7 @@ onUnmounted(() => {
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  @media (width <= 768px) {
+  @media (width < 768px) {
     flex-direction: column;
   }
 }
@@ -129,13 +133,13 @@ onUnmounted(() => {
   border: 1px solid #bebebe;
   border-radius: 16px;
   margin-top: 24px;
-  @media (width <= 1280px) {
+  @media (width < 1280px) {
     width: 100%;
   }
-  @media (width <= 768px) {
+  @media (width < 768px) {
     margin-top: 16px;
   }
-  @media (width <= 480px) {
+  @media (width < 480px) {
     margin-top: 12px;
   }
 }

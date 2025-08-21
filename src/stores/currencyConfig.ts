@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { CurrencyConfig } from '@/stores/types.ts';
-// import { currencyConfigMock } from '@/stores/mocks/currencyMock.ts';
 import axiosApi from '@/api/axiosApi.ts';
 import { CanceledError } from 'axios';
 
@@ -49,16 +48,6 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
         this.createTickersMap(response.data);
         this.data = response.data;
         this.initialFetch = false;
-
-        // const response = new Promise((resolve) => {
-        //   setTimeout(() => {
-        //     resolve('');
-        //   }, 1500);
-        // });
-        // await response;
-        // this.createTickersMap(currencyConfigMock);
-        // this.data = currencyConfigMock;
-        // this.initialFetch = false;
       } catch (error) {
         if (error instanceof CanceledError) return;
         this.error = true;
