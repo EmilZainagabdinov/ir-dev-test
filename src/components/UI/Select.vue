@@ -39,7 +39,7 @@ import { ChevronDown } from 'lucide-vue-next';
 import { SelectOptions } from '@/components/UI/types.ts';
 
 const model = defineModel();
-const { options, placeholder = 'Select...' } = defineProps<{ options: SelectOptions[], placeholder?: string }>();
+const { options, placeholder = 'Select...' } = defineProps<{ options: SelectOptions[]; placeholder?: string }>();
 
 const update = (payload: AcceptableValue) => {
   if (payload === null) {

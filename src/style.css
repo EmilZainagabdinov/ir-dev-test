@@ -13,6 +13,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+    --reka-select-trigger-width: unset;
 }
 
 * {
@@ -42,4 +43,3 @@ body {
         margin: 0 12px;
     }
 }
-
