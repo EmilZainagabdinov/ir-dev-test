@@ -9,9 +9,9 @@
         <thead class="marketTableHead">
           <tr>
             <th class="coinHeader">Coin</th>
-            <th>Price</th>
-            <th>Change</th>
-            <th v-if="!isSm">Volume</th>
+            <th class="priceHeader">Price</th>
+            <th class="changeHeader">Change</th>
+            <th v-if="!isSm" class="volumeHeader">Volume</th>
             <th v-if="isXl">Price chart</th>
           </tr>
         </thead>
@@ -126,6 +126,7 @@ onUnmounted(() => {
   gap: 16px;
   @media (width < 768px) {
     flex-direction: column;
+    gap: 12px;
   }
 }
 .tableWrapper {
@@ -138,9 +139,6 @@ onUnmounted(() => {
   }
   @media (width < 768px) {
     margin-top: 16px;
-  }
-  @media (width < 480px) {
-    margin-top: 12px;
   }
 }
 .marketTable {
@@ -167,9 +165,6 @@ onUnmounted(() => {
     }
     @media (width < 768px) {
       padding: 12px;
-      &:not(.coinHeader) {
-        text-align: right;
-      }
     }
   }
   & th:first-child {
@@ -187,6 +182,24 @@ onUnmounted(() => {
   }
   @media (width < 1024px) {
     width: auto;
+  }
+}
+.priceHeader {
+  @media (width < 1280px) {
+    text-align: right;
+  }
+}
+.changeHeader {
+  @media (width < 768px) {
+    text-align: center;
+  }
+  @media (width < 480px) {
+    text-align: right;
+  }
+}
+.volumeHeader {
+  @media (width < 1280px) {
+    text-align: right;
   }
 }
 </style>
