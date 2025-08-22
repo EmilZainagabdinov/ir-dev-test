@@ -3,36 +3,71 @@
     <table class="marketTable">
       <thead class="marketTableHead">
         <tr>
-          <th class="coinHeader">Coin</th>
-          <th class="priceHeader">Price</th>
-          <th class="changeHeader">Change</th>
-          <th v-if="!isSm" class="volumeHeader">Volume</th>
+          <th class="coinHeader">
+            <div class="sortableHeader">
+              <SortSwitch :disabled="isFetching" :sort-key="SortColumns.NAME" v-model="activeSorting" />Coin
+            </div>
+          </th>
+          <th class="priceHeader">
+            <div class="sortableHeader">
+              <SortSwitch :disabled="isFetching" :sort-key="SortColumns.PRICE" v-model="activeSorting" />Price
+            </div>
+          </th>
+          <th class="changeHeader">
+            <div class="sortableHeader">
+              <SortSwitch :disabled="isFetching" :sort-key="SortColumns.PRICE_CHANGE" v-model="activeSorting" />Change
+            </div>
+          </th>
+          <th v-if="!isSm" class="volumeHeader">
+            <div class="sortableHeader">
+              <SortSwitch :disabled="isFetching" :sort-key="SortColumns.VOLUME" v-model="activeSorting" />Volume
+            </div>
+          </th>
           <th v-if="isXl">Price chart</th>
         </tr>
       </thead>
       <tbody class="marketTableBody">
         <MarketTableSkeleton v-if="props.isFetching" />
         <MarketTablePlaceholder
-          v-else-if="!props.isFetching && props.tradeList.length === 0"
+          v-else-if="!props.isFetching && sortedMarketList.length === 0"
           :no-filters="props.noActiveFilters"
         />
-        <MarketTableRow v-else v-for="item in props.tradeList" :key="item.pair.primary" :trade-pair-data="item" />
+        <MarketTableRow v-else v-for="item in sortedMarketList" :key="item.pair.primary" :trade-pair-data="item" />
       </tbody>
     </table>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue';
 import { TradePairData } from '@/stores/types.ts';
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
-
-const props = defineProps<{ tradeList: TradePairData[]; isFetching: boolean; noActiveFilters: boolean }>();
-
 import MarketTableRow from './MarketTableRow.vue';
 import MarketTableSkeleton from '@/components/MarketTable/MarketTableSkeleton.vue';
 import MarketTablePlaceholder from '@/components/MarketTable/MarketTablePlaceholder.vue';
+import SortSwitch from '@/components/MarketTable/SortSwitch.vue';
+import { SortColumns, SortValue } from '@/components/MarketTable/types.ts';
+import { marketDataSort } from '@/utils/marketDataSort.ts';
+import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
+import { storeToRefs } from 'pinia';
+
+const props = defineProps<{ tradeList: TradePairData[]; isFetching: boolean; noActiveFilters: boolean }>();
+const currencyConfig = useCurrencyConfigStore();
+const { tickersMap } = storeToRefs(currencyConfig);
 
 const { isSm, isXl } = useBreakpoints();
+const activeSorting = ref<SortValue | ''>('');
+
+const sortedMarketList = computed(() => {
+  let tradeListCopy = [...props.tradeList];
+
+  if (activeSorting.value) {
+    marketDataSort(activeSorting.value, tradeListCopy, tickersMap.value);
+    return [...tradeListCopy];
+  } else {
+    return props.tradeList;
+  }
+});
 </script>
 
 <style scoped>
@@ -108,6 +143,11 @@ const { isSm, isXl } = useBreakpoints();
   @media (width < 1280px) {
     text-align: right;
   }
+}
+.sortableHeader {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>
 
