@@ -1,11 +1,11 @@
 <template>
-  <button class="button">
+  <button class="button" :class="{buttonMd: size === 'md'}">
     <slot />
   </button>
 </template>
 
 <script setup lang="ts">
-
+const { size = 'sm' } = defineProps<{ size?: 'sm' | 'md' }>();
 </script>
 
 <style scoped>
@@ -29,5 +29,10 @@
     outline: 2px solid #f5f5f5;
     outline-offset: 2px;
   }
+}
+.buttonMd {
+  height: 48px;
+  font-size: 24px;
+  padding: 0 24px;
 }
 </style>
