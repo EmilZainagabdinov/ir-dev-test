@@ -118,34 +118,34 @@ const sortedMarketList = computed(() => {
 }
 .coinHeader {
   width: 400px;
-  text-align: left;
   @media (width < 1280px) {
     width: 20%;
   }
   @media (width < 1024px) {
     width: auto;
   }
+  & .sortableHeader {
+    justify-self: flex-start;
+  }
 }
-.priceHeader {
+.priceHeader .sortableHeader {
   @media (width < 1280px) {
-    text-align: right;
+    justify-self: flex-end;
   }
 }
-.changeHeader {
-  @media (width < 768px) {
-    text-align: center;
-  }
+.changeHeader .sortableHeader {
   @media (width < 480px) {
-    text-align: right;
+    justify-self: flex-end;
   }
 }
-.volumeHeader {
+.volumeHeader .sortableHeader {
   @media (width < 1280px) {
-    text-align: right;
+    justify-self: flex-end;
   }
 }
 .sortableHeader {
   display: flex;
+  justify-self: center;
   align-items: center;
   gap: 4px;
 }

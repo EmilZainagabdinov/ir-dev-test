@@ -1,130 +1,33 @@
 import { TradePairData } from '@/stores/types.ts';
-import { SortValue } from '@/components/MarketTable/types.ts';
+import { SortColumns, SortOrder, SortValue } from '@/components/MarketTable/types.ts';
 
 export const marketDataSort = (sortValue: SortValue | '', data: TradePairData[], tickers: Record<string, { ticker: string; icon: string; fractionDigits: number }>) => {
-  switch (sortValue) {
-    case 'name_asc':
-      data.sort((a, b) => {
-        const valueA = tickers?.[a.pair.primary]?.ticker.toLowerCase() || a.pair.primary.toLowerCase();
-        const valueB = tickers?.[b.pair.primary]?.ticker.toLowerCase()  || b.pair.primary.toLowerCase();
+  if (!sortValue) return;
 
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
-      });
-      break;
-    case 'name_desc': {
-      data.sort((a, b) => {
-        const valueA = tickers?.[a.pair.primary]?.ticker.toLowerCase() || a.pair.primary.toLowerCase();
-        const valueB = tickers?.[b.pair.primary]?.ticker.toLowerCase() || b.pair.primary.toLowerCase();
+  const [sortKey, sortDirection] = sortValue.split('_') as [SortColumns, SortOrder];
+  const isAscending = sortDirection === 'asc';
 
-        if (valueA < valueB) {
-          return 1;
-        }
-        if (valueA > valueB) {
-          return -1;
-        }
-        return 0;
-      });
-      break;
-    }
+  const sortData = (getValue: (item: TradePairData) => number | string) => {
+    data.sort((a, b) => {
+      const valueA = getValue(a);
+      const valueB = getValue(b);
+      
+      if (valueA < valueB) return isAscending ? -1 : 1;
+      if (valueA > valueB) return isAscending ? 1 : -1;
+      return 0;
+    });
+  };
 
-    case 'price_asc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.price.last);
-        const valueB = parseFloat(b.price.last);
+  const sortKeyMap = {
+    name: (item: TradePairData) => 
+      tickers?.[item.pair.primary]?.ticker.toLowerCase() || item.pair.primary.toLowerCase(),
+    price: (item: TradePairData) => parseFloat(item.price.last),
+    priceChange: (item: TradePairData) => parseFloat(item.price.change.amount),
+    volume: (item: TradePairData) => parseFloat(item.volume.secondary),
+  };
 
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
-      });
-      break;
-    }
-    case 'price_desc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.price.last);
-        const valueB = parseFloat(b.price.last);
-
-        if (valueA < valueB) {
-          return 1;
-        }
-        if (valueA > valueB) {
-          return -1;
-        }
-        return 0;
-      });
-      break;
-    }
-
-    case 'priceChange_asc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.price.change.amount);
-        const valueB = parseFloat(b.price.change.amount);
-
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
-      });
-      break;
-    }
-    case 'priceChange_desc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.price.change.amount);
-        const valueB = parseFloat(b.price.change.amount);
-
-        if (valueA < valueB) {
-          return 1;
-        }
-        if (valueA > valueB) {
-          return -1;
-        }
-        return 0;
-      });
-      break;
-    }
-    case 'volume_asc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.volume.secondary);
-        const valueB = parseFloat(b.volume.secondary);
-
-        if (valueA < valueB) {
-          return -1;
-        }
-        if (valueA > valueB) {
-          return 1;
-        }
-        return 0;
-      });
-      break;
-    }
-    case 'volume_desc': {
-      data.sort((a, b) => {
-        const valueA = parseFloat(a.volume.secondary);
-        const valueB = parseFloat(b.volume.secondary);
-
-        if (valueA < valueB) {
-          return 1;
-        }
-        if (valueA > valueB) {
-          return -1;
-        }
-        return 0;
-      });
-      break;
-    }
-    default:
-      break;
+  const valueExtractor = sortKeyMap[sortKey as keyof typeof sortKeyMap];
+  if (valueExtractor) {
+    sortData(valueExtractor);
   }
 };
