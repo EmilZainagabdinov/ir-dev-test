@@ -20,6 +20,7 @@
     </button>
     <Transition v-if="isBurgerMenuOpen">
       <nav class="burgerNavigation">
+        <RouterLink to="/" class="navLink">Main</RouterLink>
         <RouterLink to="/dummy" class="navLink">Nav Link</RouterLink>
         <RouterLink to="/dummy" class="navLink">Another Link</RouterLink>
         <RouterLink to="/dummy" class="navLink">One More Link</RouterLink>
@@ -31,12 +32,14 @@
 </template>
 
 <script setup lang="ts">
+import { onUnmounted, ref, watch } from 'vue';
 import { BadgeDollarSign, Menu } from 'lucide-vue-next';
+import { useRoute } from 'vue-router'
 import Button from '@/components/UI/Button.vue';
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
-import { onUnmounted, ref, watch } from 'vue';
 import { useBlockScroll } from '@/composables/useBlockScroll.ts';
 
+const route = useRoute();
 const { isSm, isMd } = useBreakpoints();
 const isBurgerMenuOpen = ref(false);
 const { blockScroll, releaseScroll} = useBlockScroll();
@@ -46,6 +49,12 @@ watch(isBurgerMenuOpen, () => {
     blockScroll();
   } else {
     releaseScroll();
+  }
+});
+
+watch(route, () => {
+  if (isBurgerMenuOpen.value) {
+    isBurgerMenuOpen.value = false;
   }
 });
 
