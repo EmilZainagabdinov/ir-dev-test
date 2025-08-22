@@ -1,6 +1,6 @@
 <template>
-  <header>header here...</header>
-  <main>
+  <Header />
+  <main class="contentWrapper">
     <MarketTable />
   </main>
   <footer>footer here...</footer>
@@ -8,4 +8,5 @@
 
 <script setup>
 import MarketTable from '@/components/MarketTable/MarketTable.vue';
+import Header from '@/components/Header/Header.vue';
 </script>
