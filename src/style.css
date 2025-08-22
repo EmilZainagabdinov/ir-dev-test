@@ -48,16 +48,17 @@ body {
 
 .contentWrapper {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 48px auto 96px;
     @media (width < 1280px) {
         max-width: none;
-        margin: 0 40px;
+        margin-left: 40px;
+        margin-right: 40px;
     }
     @media (width < 768px) {
-        margin: 0 24px;
+        margin: 24px 24px 48px;
     }
     @media (width < 480px) {
-        margin: 0 12px;
+        margin: 12px 12px 24px;
     }
 }
 
