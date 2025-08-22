@@ -1,8 +1,19 @@
 <template>
   <div class="wrapper">
     <div class="filtersBar">
-      <Select v-model="filter" :options="filterOptions" placeholder="Select filter..." :width="isSm ? '100%' : '200px'" />
-      <Input id="marketTableSearch" v-model="search" :icon="Search" placeholder="Search..." :width="isSm ? '100%' : '300px'" />
+      <Select
+        v-model="filter"
+        :options="filterOptions"
+        placeholder="Select filter..."
+        :width="isSm ? '100%' : '200px'"
+      />
+      <Input
+        id="marketTableSearch"
+        v-model="search"
+        :icon="Search"
+        placeholder="Search..."
+        :width="isSm ? '100%' : '300px'"
+      />
     </div>
     <div class="tableWrapper">
       <table class="marketTable">
@@ -17,14 +28,11 @@
         </thead>
         <tbody class="marketTableBody">
           <MarketTableSkeleton v-if="isFetching" />
-          <MarketTablePlaceholder v-else-if="!isFetching && filteredMarketList.length === 0" :no-filters="noActiveFilters" />
-          <MarketTableRow
-            v-else
-            v-for="item in filteredMarketList"
-            :key="item.pair.primary"
-            :trade-pair-data="item"
+          <MarketTablePlaceholder
+            v-else-if="!isFetching && filteredMarketList.length === 0"
+            :no-filters="noActiveFilters"
           />
-
+          <MarketTableRow v-else v-for="item in filteredMarketList" :key="item.pair.primary" :trade-pair-data="item" />
         </tbody>
       </table>
     </div>
@@ -34,7 +42,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { watchDebounced } from '@vueuse/core';
+import { watchDebounced, useWindowFocus } from '@vueuse/core';
 import { Search } from 'lucide-vue-next';
 import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { useMarketDataStore } from '@/stores/marketData.ts';
@@ -50,9 +58,11 @@ import MarketTablePlaceholder from '@/components/MarketTable/MarketTablePlacehol
 
 const currencyConfig = useCurrencyConfigStore();
 const marketData = useMarketDataStore();
-const { isSm, isXl } = useBreakpoints();
-let pollingInterval: ReturnType<typeof setTimeout>;
 const { data: marketDataList } = storeToRefs(marketData);
+const { isSm, isXl } = useBreakpoints();
+const tabFocused = useWindowFocus();
+
+let pollingInterval: ReturnType<typeof setTimeout>;
 
 const search = ref('');
 const debouncedSearch = ref('');
@@ -68,13 +78,13 @@ watchDebounced(
 );
 
 const isFetching = computed(() => currencyConfig.initialFetch || marketData.initialFetch);
-const noActiveFilters = computed(() => !debouncedSearch.value && !filter.value );
+const noActiveFilters = computed(() => !debouncedSearch.value && !filter.value);
 const filterOptions: SelectOptions[] = [
   { label: 'Gaining', value: PriceChangeEnum.UP },
   { label: 'Losing', value: PriceChangeEnum.DOWN },
 ];
 
-watch([marketDataList, filter, debouncedSearch], () => {
+const { stop: stopFilterWatch } = watch([marketDataList, filter, debouncedSearch], () => {
   let marketListCopy = [...marketDataList.value];
 
   if (debouncedSearch.value) {
@@ -97,8 +107,10 @@ onMounted(() => {
   marketData.fetchMarketData();
 
   pollingInterval = setInterval(() => {
-    currencyConfig.fetchCurrencyConfig();
-    marketData.fetchMarketData();
+    if (tabFocused.value) {
+      currencyConfig.fetchCurrencyConfig();
+      marketData.fetchMarketData();
+    }
   }, 5000);
 });
 
@@ -106,6 +118,7 @@ onUnmounted(() => {
   if (pollingInterval) {
     clearInterval(pollingInterval);
   }
+  stopFilterWatch();
 });
 </script>
 
