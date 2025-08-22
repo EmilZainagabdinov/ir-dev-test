@@ -6,9 +6,9 @@
         <template v-else>Name/Logo</template>
       </RouterLink>
       <template v-if="!isSm">
+        <RouterLink to="/" class="navLink">Main</RouterLink>
         <RouterLink to="/dummy" class="navLink">Nav Link</RouterLink>
         <RouterLink to="/dummy" class="navLink">Another Link</RouterLink>
-        <RouterLink to="/dummy" class="navLink">One More Link</RouterLink>
       </template>
     </nav>
     <div v-if="!isSm" class="headerBlock actionBlock">
@@ -23,7 +23,6 @@
         <RouterLink to="/" class="navLink">Main</RouterLink>
         <RouterLink to="/dummy" class="navLink">Nav Link</RouterLink>
         <RouterLink to="/dummy" class="navLink">Another Link</RouterLink>
-        <RouterLink to="/dummy" class="navLink">One More Link</RouterLink>
         <Button size="md"> Sign in </Button>
         <Button size="md"> Register </Button>
       </nav>
@@ -118,6 +117,10 @@ onUnmounted(() => {
     color: #e6e6e6;
     text-decoration: underline;
   }
+}
+.navLink.router-link-active {
+  text-decoration: underline;
+  color: #f5f5f5;
 }
 .burgerButton {
   all: unset;
