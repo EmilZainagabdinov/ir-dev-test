@@ -89,6 +89,8 @@ onUnmounted(() => {
     clearInterval(pollingInterval);
   }
   stopFilterWatch();
+  marketData.$reset();
+  currencyConfig.$reset();
 });
 </script>
 
