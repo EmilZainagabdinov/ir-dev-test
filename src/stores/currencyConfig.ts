@@ -34,6 +34,9 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
     async fetchCurrencyConfig() {
       this.isFetching = true;
       this.error = false;
+      if (this.data.length === 0) {
+        this.initialFetch = true;
+      }
 
       try {
         if (this.abortController) {
@@ -47,11 +50,11 @@ export const useCurrencyConfigStore = defineStore('currencyConfig', {
 
         this.createTickersMap(response.data);
         this.data = response.data;
-        this.initialFetch = false;
       } catch (error) {
         if (error instanceof CanceledError) return;
         this.error = true;
       } finally {
+        this.initialFetch = false;
         this.isFetching = false;
         this.abortController = null;
       }

@@ -6,7 +6,7 @@
         <div v-else class="noImageWrapper">
           <ImageOff :size="20" />
         </div>
-        {{ coinTicker }}
+        {{ tradePairData.pair.primary }}
       </div>
     </td>
     <td class="currencyValue">$ {{ lastPrice }}</td>

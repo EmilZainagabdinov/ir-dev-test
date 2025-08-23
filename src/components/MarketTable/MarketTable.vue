@@ -29,9 +29,17 @@
       <tbody class="marketTableBody">
         <MarketTableSkeleton v-if="props.isFetching" />
         <MarketTablePlaceholder
-          v-else-if="!props.isFetching && sortedMarketList.length === 0"
+          v-else-if="!props.isFetching && (sortedMarketList.length === 0 || props.error)"
           :no-filters="props.noActiveFilters"
-        />
+          :error="props.error"
+        >
+          <template v-slot:actionBlock>
+            <Button @click="props.refresh" :disabled="props.isFetching">
+              <RotateCw :size="16" :strokeWidth="3" />
+              Refresh
+            </Button>
+          </template>
+        </MarketTablePlaceholder>
         <MarketTableRow v-else v-for="item in sortedMarketList" :key="item.pair.primary" :trade-pair-data="item" />
       </tbody>
     </table>
@@ -50,8 +58,16 @@ import { SortColumns, SortValue } from '@/components/MarketTable/types.ts';
 import { marketDataSort } from '@/utils/marketDataSort.ts';
 import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
 import { storeToRefs } from 'pinia';
+import Button from '@/components/UI/Button.vue';
+import { RotateCw } from 'lucide-vue-next';
 
-const props = defineProps<{ tradeList: TradePairData[]; isFetching: boolean; noActiveFilters: boolean }>();
+const props = defineProps<{
+  tradeList: TradePairData[];
+  isFetching: boolean;
+  noActiveFilters: boolean;
+  error: boolean;
+  refresh: () => void;
+}>();
 const currencyConfig = useCurrencyConfigStore();
 const { tickersMap } = storeToRefs(currencyConfig);
 

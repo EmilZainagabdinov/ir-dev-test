@@ -9,7 +9,13 @@
       :width="isSm ? '100%' : '300px'"
     />
   </div>
-  <MarketTable :trade-list="filteredMarketList" :is-fetching="isInitialFetch" :no-active-filters="noActiveFilters" />
+  <MarketTable
+    :trade-list="filteredMarketList"
+    :is-fetching="isInitialFetch"
+    :no-active-filters="noActiveFilters"
+    :error="isError"
+    :refresh="fetchData"
+  />
 </template>
 
 <script setup lang="ts">
@@ -52,6 +58,7 @@ watchDebounced(
 );
 
 const isInitialFetch = computed(() => currencyConfig.initialFetch || marketData.initialFetch);
+const isError = computed(() => currencyConfig.error || marketData.error);
 const noActiveFilters = computed(() => !debouncedSearch.value && !filter.value);
 
 const { stop: stopFilterWatch } = watch([marketDataList, filter, debouncedSearch], () => {
@@ -72,15 +79,17 @@ const { stop: stopFilterWatch } = watch([marketDataList, filter, debouncedSearch
   filteredMarketList.value = [...marketListCopy];
 });
 
-onMounted(() => {
+const fetchData = () => {
   currencyConfig.fetchCurrencyConfig();
   marketData.fetchMarketData();
+};
+
+onMounted(() => {
+  fetchData();
 
   pollingInterval = setInterval(() => {
-    if (!isInitialFetch.value && tabFocused.value) {
-      currencyConfig.fetchCurrencyConfig();
-      marketData.fetchMarketData();
-    }
+    if (isError || !isInitialFetch.value || !tabFocused.value) return;
+    fetchData();
   }, 10000);
 });
 

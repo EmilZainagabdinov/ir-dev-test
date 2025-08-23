@@ -1,12 +1,12 @@
 <template>
   <tr>
     <td :colspan="colspan">
-      <div class="placeholderContent">
-        <List v-if="noFilters" :size="isSm ? 48 : 72" />
+      <div class="placeholderContent" :class="{ placeholderContentError: error }">
+        <CircleX v-if="error" :size="isSm ? 48 : 72" />
+        <List v-else-if="noFilters" :size="isSm ? 48 : 72" />
         <SearchX v-else :size="isSm ? 48 : 72" />
-        <span class="placeholderText">{{
-          noFilters ? 'Trade data not found' : 'Try refining your search parameters'
-        }}</span>
+        <span class="placeholderText">{{ placeholderText }}</span>
+        <slot v-if="error" name="actionBlock" />
       </div>
     </td>
   </tr>
@@ -14,13 +14,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { SearchX, List } from 'lucide-vue-next';
+import { SearchX, List, CircleX } from 'lucide-vue-next';
 
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 
-const { noFilters } = defineProps<{ noFilters: boolean }>();
+const { noFilters, error } = defineProps<{ noFilters: boolean; error: boolean }>();
 
 const { isSm, isLg } = useBreakpoints();
+const placeholderText = computed(() => {
+  if (!noFilters) return 'Try refining your search parameters';
+  if (error) return 'Oops, something went wrong!';
+  return 'Trade data not found';
+});
 
 const colspan = computed(() => {
   if (isSm.value) {
@@ -48,8 +53,13 @@ const colspan = computed(() => {
   @media (width < 768px) {
     padding: 96px 0;
   }
-  & svg * {
-    stroke: #3c3c3c;
+  & svg {
+    color: #3c3c3c;
+  }
+}
+.placeholderContentError {
+  & svg {
+    color: #b40000;
   }
 }
 .placeholderText {
