@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { marketDataSort } from '@/utils/marketDataSort';
-import { TradePairData, PriceChangeEnum } from '@/stores/types';
-import { SortColumns, SortOrder } from '@/components/MarketTable/types';
+import { marketDataSort } from '@/utils/marketDataSort.ts';
+import { TradePairData, PriceChangeEnum } from '@/stores/types.ts';
+import { SortColumns, SortOrder } from '@/components/MarketTable/types.ts';
 
 describe('marketDataSort', () => {
   let mockData: TradePairData[];

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
-import { useMarketDataStore } from '@/stores/marketData';
-import { TradePairData, PriceChangeEnum } from '@/stores/types';
-import axiosApi from '@/api/axiosApi';
+import { useMarketDataStore } from '@/stores/marketData.ts';
+import { TradePairData, PriceChangeEnum } from '@/stores/types.ts';
+import axiosApi from '@/api/axiosApi.ts';
 import { CanceledError } from 'axios';
 
 // Type for mock axios response
