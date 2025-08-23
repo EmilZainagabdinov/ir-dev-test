@@ -5,7 +5,7 @@ export const marketDataSort = (sortValue: SortValue | '', data: TradePairData[],
   if (!sortValue) return;
 
   const [sortKey, sortDirection] = sortValue.split('_') as [SortColumns, SortOrder];
-  const isAscending = sortDirection === 'asc';
+  const isAscending = sortDirection === SortOrder.ASC;
 
   const sortData = (getValue: (item: TradePairData) => number | string) => {
     data.sort((a, b) => {

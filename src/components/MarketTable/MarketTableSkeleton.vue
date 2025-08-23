@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import Shimmer from '@/components/Common/Shimmer.vue';
+import Shimmer from '@/components/UI/Shimmer.vue';
 import { useBreakpoints } from '@/composables/useMediaQuery.ts';
 
 const { isSm, isMd, isXl } = useBreakpoints();

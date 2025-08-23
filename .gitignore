@@ -13,4 +13,3 @@ next-env.d.ts
 *.pem
 .idea
 .vscode
-.env
