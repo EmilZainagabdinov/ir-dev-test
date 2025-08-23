@@ -24,6 +24,9 @@ export const useMarketDataStore = defineStore('marketData', {
     async fetchMarketData() {
       this.isFetching = true;
       this.error = false;
+      if (this.data.length === 0) {
+        this.initialFetch = true;
+      }
 
       try {
         if (this.abortController) {
@@ -35,12 +38,12 @@ export const useMarketDataStore = defineStore('marketData', {
 
         const response = await axiosApi.get<TradePairData[]>('/test/api/market', { signal });
         this.data = response.data;
-        this.initialFetch = false;
       } catch (error: unknown) {
         if (error instanceof CanceledError) return;
         this.error = true;
       } finally {
         this.isFetching = false;
+        this.initialFetch = false;
         this.abortController = null;
       }
     },
