@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
-import { useCurrencyConfigStore } from '@/stores/currencyConfig';
-import { CurrencyConfig } from '@/stores/types';
-import axiosApi from '@/api/axiosApi';
+import { useCurrencyConfigStore } from '@/stores/currencyConfig.ts';
+import { CurrencyConfig } from '@/stores/types.ts';
+import axiosApi from '@/api/axiosApi.ts';
 import { CanceledError } from 'axios';
 
 type MockAxiosResponse<T = unknown> = {
